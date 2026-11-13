@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>স্মার্টি জোন কোহিনুর সিটি</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>স্মার্টি জোন কোহিনুর সিটি</h1>
+    <input type="text" id="search" placeholder="ফোন খুঁজুন...">
+  </header>
+
+  <main id="phone-list"></main>
+
+  <section class="gallery-section">
+    <h2>আমাদের হ্যাপি কাস্টমার</h2>
+    <div id="gallery" class="gallery"></div>
+  </section>
+
+  <div id="modal" class="modal hidden">
+    <div class="modal-box">
+      <button id="close">X</button>
+      <div id="modal-content"></div>
+    </div>
+  </div>
+
+  <footer>
+    <p>স্মার্টি জোন, দোকান নম্বর ৫০৮, লেভেল ৫, মেরিডিয়ান কোহিনুর সিটি, ওয়াসা, চট্টগ্রাম। ফোন: 01887764574</p>
+    <p><a class="map-btn" href="https://www.google.com/maps/search/?api=1&query=Kohinoor+City+Wasa+Chattogram" target="_blank">📍 গুগল ম্যাপে দোকান দেখুন</a></p>
+  </footer>
+
+  <script src="phones.js"></script>
+  <script src="gallery.js"></script>
+  <script>
+    const list = document.getElementById('phone-list');
+    const modal = document.getElementById('modal');
+    const modalContent = document.getElementById('modal-content');
+
+    function render(items) {
+      list.innerHTML = '';
+      items.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <img src="${p.image}" alt="${p.name}">
+          <h3>${p.name}</h3>
+          <p class="price">৳ ${p.price.toLocaleString()}</p>
+        `;
+        card.onclick = () => openModal(p);
+        list.appendChild(card);
+      });
+    }
+
+    function openModal(p) {
+      const rows = Object.entries(p.specs)
+        .map(([k, v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join('');
+      modalContent.innerHTML = `
+        <img src="${p.image}" alt="${p.name}">
+        <h2>${p.name}</h2>
+        <p class="price">৳ ${p.price.toLocaleString()}</p>
+        <table>${rows}</table>
+      `;
+      modal.classList.remove('hidden');
+    }
+
+    document.getElementById('close').onclick = () => modal.classList.add('hidden');
+    document.getElementById('search').oninput = e => {
+      const q = e.target.value.toLowerCase();
+      render(phones.filter(p => p.name.toLowerCase().includes(q)));
+    };
+
+    render(phones);
+
+    const gallery = document.getElementById('gallery');
+    customerPhotos.forEach(file => {
+      const img = document.createElement('img');
+      img.src = 'gallery/' + file;
+      img.alt = 'আমাদের কাস্টমার';
+      img.loading = 'lazy';
+      gallery.appendChild(img);
+    });
+  </script>
+</body>
+</html>
